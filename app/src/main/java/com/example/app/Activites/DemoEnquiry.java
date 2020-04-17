@@ -1,12 +1,10 @@
 package com.example.app.Activites;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.StrictMode;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -15,21 +13,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
-import com.upturnoes.Class.MyConfig;
-import com.upturnoes.R;
-import com.upturnoes.utils.Tools;
+import androidx.appcompat.app.AppCompatActivity;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
+
+import com.example.app.R;
+import com.example.app.utils.Tools;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -40,7 +30,6 @@ public class DemoEnquiry extends AppCompatActivity {
     EditText edit_your_name,edit_org_name,edit_contact,edit_city,edit_email,edit_website,edit_address,edit_courses,edit_message;
     Button bt_submit;
 
-    ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
@@ -79,9 +68,7 @@ public class DemoEnquiry extends AppCompatActivity {
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_chevron_left);
-        setSupportActionBar(toolbar);
+
         getSupportActionBar().setTitle("Demo & Enquiry");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Tools.setSystemBarColor(this, R.color.colorPrimary);
@@ -189,8 +176,7 @@ public class DemoEnquiry extends AppCompatActivity {
 
     private void AddEnquiry() {
 
-        progressDialog = new ProgressDialog(DemoEnquiry.this,
-                R.style.Dialog_Theme);
+
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Please Wait...");
         progressDialog.show();
@@ -209,48 +195,7 @@ public class DemoEnquiry extends AppCompatActivity {
         String courses = edit_courses.getText().toString();
         String message = edit_message.getText().toString();
 
-        nameValuePairs.add(new BasicNameValuePair("student_id", student_id));
-        nameValuePairs.add(new BasicNameValuePair("fullname", fullname));
-        nameValuePairs.add(new BasicNameValuePair("org_name", org_name));
-        nameValuePairs.add(new BasicNameValuePair("contact", contact));
-        nameValuePairs.add(new BasicNameValuePair("city", city));
-        nameValuePairs.add(new BasicNameValuePair("email", email));
-        nameValuePairs.add(new BasicNameValuePair("website", website));
-        nameValuePairs.add(new BasicNameValuePair("address", address));
-        nameValuePairs.add(new BasicNameValuePair("courses", courses));
-        nameValuePairs.add(new BasicNameValuePair("message", message));
 
-        try {
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost( MyConfig.URL_ADD_DEMO_ENQUIRY);
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-            HttpResponse response = httpclient.execute(httppost);
-            HttpEntity entity = response.getEntity();
-            //  is = entity.getContent();
-            String data = EntityUtils.toString(entity);
-            Log.e("Register", data);
-            if(data.matches( "success" )) {
-                Log.e( "pass 1", "connection success " );
-
-                progressDialog.dismiss();
-                Toast.makeText( DemoEnquiry.this, "Send Successfully", Toast.LENGTH_SHORT ).show();
-
-                 emptyInputEditText();
-
-            }if(data.matches( "failure" )) {
-                Log.e( "pass 1", "connection success " );
-                progressDialog.dismiss();
-                Toast.makeText( DemoEnquiry.this, "Something went wrong", Toast.LENGTH_SHORT ).show();
-
-            }
-        } catch (ClientProtocolException e) {
-            Log.e("Fail 1", e.toString());
-            Toast.makeText(getApplicationContext(), "Invalid IP Address", Toast.LENGTH_LONG).show();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 
