@@ -1,4 +1,4 @@
-package com.example.app.Activities.Activites;
+package com.example.app.Activites;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
