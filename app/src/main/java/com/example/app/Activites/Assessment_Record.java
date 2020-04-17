@@ -10,24 +10,17 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-
-i
 import com.example.app.R;
+import com.example.app.utils.Tools;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 
 public class Assessment_Record extends AppCompatActivity {
 
-    ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
@@ -64,7 +57,6 @@ public class Assessment_Record extends AppCompatActivity {
         exam_title= sharedPreferences.getString("exam_title",null);
 
 
-        GetAssessmentRecord();
 
         txt_exam_name.setText(exam_id+" : "+exam_title);
         txt_student_name.setText(student_id+" : "+first_name+" "+ last_name);
@@ -80,7 +72,7 @@ public class Assessment_Record extends AppCompatActivity {
         btn_dashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Assessment_Record.this, MainActivity.class);
+                Intent i = new Intent(Assessment_Record.this, com.example.app.Activities.Activites.MainActivity.class);
                 startActivity(i);
                 finish();
             }
@@ -89,8 +81,7 @@ public class Assessment_Record extends AppCompatActivity {
 
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
         getSupportActionBar().setTitle(exam_title);
          getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Tools.setSystemBarColor(this, R.color.colorPrimary);
@@ -99,7 +90,7 @@ public class Assessment_Record extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            Intent i = new Intent(Assessment_Record.this, MainActivity.class);
+            Intent i = new Intent(Assessment_Record.this, com.example.app.Activities.Activites.MainActivity.class);
             startActivity(i);
             finish();
         }
@@ -107,92 +98,10 @@ public class Assessment_Record extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void GetAssessmentRecord() { String data;
-
-        try {
-            HttpClient httpclient = new DefaultHttpClient();
-            //HttpPost httppost = new HttpPost("http://192.168.1.35/photo_editor/select.php");
-            HttpPost httppost = new HttpPost( MyConfig.URL_GET_ASSESSMENT_RESULT);
-            nameValuePairs.add(new BasicNameValuePair("exam_id", exam_id));
-            nameValuePairs.add(new BasicNameValuePair("student_id", student_id));
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-            HttpResponse response = httpclient.execute(httppost);
-            HttpEntity entity = response.getEntity();
-            data = EntityUtils.toString(entity);
-            Log.e("Check Data Main", data);
-            try
-            {
-                JSONArray json = new JSONArray(data);
-                for (int i = 0; i < json.length(); i++)
-                {
-                    JSONObject obj = json.getJSONObject(i);
-                    String id = obj.getString("id");
-                    String exam= obj.getString("exam");
-                    String date_taken = obj.getString("date_taken");
-                    String completed = obj.getString("completed");
-                    String score = obj.getString("score");
-                    String status = obj.getString("status");
-                    String right_ans = obj.getString("right_ans");
-                    String wrong_ans = obj.getString("wrong_ans");
-
-                    Log.e("fetch data",id+"="+exam+"="+score+"="+status+"//"+wrong_ans+"//"+right_ans);
-
-
-                    int right_anss = Integer.parseInt(right_ans);
-                    String right_answer = String.format("%02d",right_anss);
-                    txt_right_que.setText(right_answer);
-
-                    int wrong_anss = Integer.parseInt(wrong_ans);
-                    String wrong_answer = String.format("%02d",wrong_anss);
-                    txt_wrong_que.setText(wrong_answer);
-
-
-                    txt_score.setText(score +"%");
-                    if(status.equals("You Passed!")){
-                        txt_result.setTextColor(getResources().getColor(R.color.colorAccent));
-                        txt_result.setText(status);
-                    }else if(status.equals("You Failed!")){
-                        txt_result.setTextColor(getResources().getColor(R.color.amber_800));
-                        txt_result.setText(status);
-                    }
-
-                   /* sharedPreferences = getApplicationContext().getSharedPreferences("Mydata", MODE_PRIVATE);
-                    editor = sharedPreferences.edit();
-                    editor.putString("idtag", student_id);
-                    editor.putString("first_name", first_name);
-                    editor.putString("last_name", last_name);
-                    editor.putString("gender", gender);
-                    editor.putString("department", department);
-                    editor.putString("student_class", student_class);
-                    editor.putString("emailtag", email);
-                    editor.putString("role", role);
-                    editor.putString("avator", avator);
-                    editor.commit();*/
-
-
-                }
-
-            }
-            catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-        } catch (ClientProtocolException e) {
-            Log.e("Fail 1", e.toString());
-            Toast.makeText(getApplicationContext(), "Invalid IP Address",Toast.LENGTH_LONG).show();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(Assessment_Record.this, MainActivity.class);
+        Intent i = new Intent(Assessment_Record.this, com.example.app.Activities.Activites.MainActivity.class);
         startActivity(i);
         finish();
     }
