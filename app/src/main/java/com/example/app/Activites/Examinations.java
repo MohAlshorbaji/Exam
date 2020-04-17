@@ -5,12 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -19,18 +15,16 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toolbar;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.upturnoes.Adapter.Exam_Adapter;
-import com.upturnoes.Class.MyConfig;
-import com.upturnoes.MainActivity;
-import com.upturnoes.Model.Exam_Model_List;
-import com.upturnoes.R;
-import com.upturnoes.utils.Tools;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
+
+import com.example.app.Adapter.Exam_Adapter;
+import com.example.app.Model.Exam_Model_List;
+import com.example.app.R;
+import com.example.app.utils.Tools;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,7 +57,6 @@ public class Examinations extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_examinations);
         initToolbar();
-        deleteCache(Examinations.this);
 
         showDialog();
 
@@ -71,14 +64,11 @@ public class Examinations extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         edit_search=(AutoCompleteTextView)findViewById( R.id.et_search);
         rowListItem=new ArrayList<Exam_Model_List>();
-        get_Examinations();
 
 
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Examinations");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Tools.setSystemBarColor(this, R.color.colorPrimary);
@@ -104,50 +94,7 @@ public class Examinations extends AppCompatActivity {
         progressbar.getIndeterminateDrawable().setColorFilter(Color.parseColor("#FF7043"), android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
-    public void get_Examinations(){
-        StringRequest stringRequest = new StringRequest( Request.Method.POST, MyConfig.URL_GET_Examinations,
-                new com.android.volley.Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        JSONObject j = null;
-                        try {
-                            j = new JSONObject(response);
-                            result = j.getJSONArray(JSON_ARRAY);
-                            getCategory(result);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new com.android.volley.Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
 
-                    }
-
-                })
-        {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-
-
-                sharedPreferences=getApplicationContext().getSharedPreferences("Mydata",MODE_PRIVATE);
-                sharedPreferences.edit();
-                String student_class= sharedPreferences.getString("student_class",null);
-                String student_id= sharedPreferences.getString("idtag",null);
-
-                Log.e("student_class",student_class +" student_id:"+student_id);
-
-                params.put("student_class",student_class);
-                params.put("student_id",student_id);
-
-                return params;
-            }
-        };
-        RequestQueue queue = Volley.newRequestQueue(Examinations.this);
-        queue.add(stringRequest);
-    }
     private void getCategory(JSONArray j){
         for(int i=0;i<j.length();i++){
             try {
@@ -179,76 +126,6 @@ public class Examinations extends AppCompatActivity {
             }
         }
 
-        if (rowListItem.size() > 0){
-            progressDialog.dismiss();
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(),1, LinearLayoutManager.VERTICAL,false);
-            mRecyclerView.setLayoutManager(gridLayoutManager); // set LayoutManager to RecyclerView
-            //rowListItem = get_ALL_CATEGORY();
-            mAdapter =new Exam_Adapter(Examinations.this,rowListItem);
-            mRecyclerView.setAdapter(mAdapter);
-            mAdapter.notifyDataSetChanged();
-
-        }else{
-            progressDialog.dismiss();
-            empty_view.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
-        }
-
-
-        // Capture Text in EditText
-        edit_search.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                String text = edit_search.getText().toString().toLowerCase( Locale.getDefault());
-                mAdapter.filter(text);
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1,
-                                          int arg2, int arg3) {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-                                      int arg3) {
-                // TODO Auto-generated method stub
-            }
-        });
-
-
-    }
-
-    public static void deleteCache(Context context) {
-        try {
-            File dir = context.getCacheDir();
-            deleteDir(dir);
-        } catch (Exception e) { e.printStackTrace();}
-    }
-
-    public static boolean deleteDir(File dir) {
-        if (dir != null && dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-                if (!success) {
-                    return false;
-                }
-            }
-            return dir.delete();
-        } else if(dir!= null && dir.isFile()) {
-            return dir.delete();
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent i = new Intent(Examinations.this, MainActivity.class);
-        startActivity(i);
-        finish();
     }
 
 }
