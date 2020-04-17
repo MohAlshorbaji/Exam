@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:background="@drawable/background"
+    tools:context=".Activities.Activites.Steptwo">
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="250dp"
+        android:layout_height="150dp"
+        android:textColor="@color/colorWhite"
+        android:textSize="25sp"
+        android:layout_marginLeft="80dp"
+        android:text="You must skip video course and example
+        to proceed to test your level of understand "
+        />
+    <LinearLayout
+        android:layout_marginTop="140dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <Button
+        android:id="@+id/sin"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/btlevel"
+        android:text="VIDEW COURSE"
+        android:textColor="@color/colorWhite" />
+    <Button
+        android:id="@+id/si"
+
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/btlevel"
+        android:text="Example and models"
+        android:textColor="@color/colorWhite" />
+    <Button
+        android:id="@+id/sing"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/btlevel"
+        android:text="Level Test"
+        android:textColor="@color/colorWhite" />
+
+    </LinearLayout>
+</RelativeLayout>
